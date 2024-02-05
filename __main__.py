@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pygame
 
 W, H = 19, 19
@@ -18,6 +19,12 @@ def draw_checkerboard():
 
 def draw_snake(x, y):
     pygame.draw.rect(screen, (0xff, 0xff, 0xff), (x * RATIO, y * RATIO, RATIO, RATIO))
+
+class Ring:
+    def __init__(self, next: Ring | None, x: int, y: int, nx: int, ny: int):
+        self.next = next
+        self.x, self.y = x, y
+        self.nx, self.ny = nx, ny
 
 while run:
     for event in pygame.event.get():
