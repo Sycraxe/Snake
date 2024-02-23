@@ -31,14 +31,14 @@ class Ring:
             raise TypeError
         self.x, self.y = x, y
     
-    def draw(self, screen: pygame.surface.Surface, ratio: int, color: Color):
+    def draw(self, screen: pygame.surface.Surface, ratio: int, border: int, color: Color):
         if type(screen) != pygame.surface.Surface:
             raise TypeError
         if type(ratio) != int:
             raise TypeError
         if type(color) != Color:
             raise TypeError
-        pygame.draw.rect(screen, color.to_tuple(), (self.x * ratio, self.y * ratio, ratio, ratio))
+        pygame.draw.rect(screen, color.to_tuple(), ((self.x + border) * ratio, (self.y + border) * ratio, ratio, ratio))
 
 
 class Snake:
@@ -103,10 +103,10 @@ class Snake:
                 ring = ring.next
                 x, y = x_, y_
     
-    def draw(self, screen: pygame.surface.Surface, ratio: int):
+    def draw(self, screen: pygame.surface.Surface, ratio: int, border: int):
         ring = self.ring
         while ring != None:
-            ring.draw(screen, ratio, self.color)
+            ring.draw(screen, ratio, border, self.color)
             ring = ring.next
     
     def append(self):
@@ -127,8 +127,8 @@ class Fruit:
     def __init__(self, x: int = 0, y: int = 0):
         self.x, self.y = x, y
     
-    def draw(self, screen: pygame.surface.Surface, ratio: int):
-        pygame.draw.rect(screen, (0xff, 0x00, 0x00), (self.x * ratio, self.y * ratio, ratio, ratio))
+    def draw(self, screen: pygame.surface.Surface, ratio: int, border: int):
+        pygame.draw.rect(screen, (0xff, 0x00, 0x00), ((self.x + border) * ratio, (self.y + border) * ratio, ratio, ratio))
 
     def shuffle(self, width: int, height: int):
         self.x, self.y = randint(0, width - 1), randint(0, height - 1)
@@ -136,9 +136,10 @@ class Fruit:
 
 #Game setup
 width, height = 19, 19
+border = 2
 ratio = 30
 
-screen = pygame.display.set_mode((height * ratio, width * ratio), pygame.NOFRAME)
+screen = pygame.display.set_mode(((height + border) * ratio, (width + border) * ratio), pygame.NOFRAME)
 clock = pygame.time.Clock()
 
 snakes = [Snake(9, 9, Color(0xFF, 0x00, 0xFF), Controls(pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT), 3)]
@@ -160,10 +161,10 @@ while run:
             pygame.draw.rect(screen, ((0x58, 0x81, 0x57) if (i + j) % 2 == 0 else (0x3a, 0x5a, 0x40)), (i * ratio, j * ratio, ratio, ratio))
 
     for snake in snakes:
-        snake.draw(screen, ratio)
+        snake.draw(screen, ratio, border)
 
     for fruit in fruits:
-        fruit.draw(screen, ratio)
+        fruit.draw(screen, ratio, border)
 
     pygame.display.flip()
 
